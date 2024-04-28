@@ -5,9 +5,11 @@
 @time: 2024/4/28 11:42
 """
 
+import pandas as pd
 from flask import Flask, request, jsonify
 from catboost import CatBoostRegressor
 from pydantic import BaseModel, ValidationError
+from typing import Optional
 
 app = Flask(__name__)
 catboost = CatBoostRegressor()
@@ -16,15 +18,15 @@ catboost.load_model(model_save_path)
 
 
 class InputData(BaseModel):
-    copolymer: float
-    A3431531268: float
-    A864662311: float
-    A3975295864: float
-    A4216335232: float
-    A3217380708: float
-    A951226070: float
-    G994485099: float
-    G2976033787: float
+    copolymer: Optional[float] = None
+    A3431531268: Optional[float] = None
+    A864662311: Optional[float] = None
+    A3975295864: Optional[float] = None
+    A4216335232: Optional[float] = None
+    A3217380708: Optional[float] = None
+    A951226070: Optional[float] = None
+    G994485099: Optional[float] = None
+    G2976033787: Optional[float] = None
 
 
 def catboost_predict(input_data):
@@ -62,8 +64,10 @@ def predict():
     except ValidationError as e:
         return jsonify({'error': str(e)}), 400
 
-    result = catboost_predict(inputData)
-    return jsonify({'result': result})
+    input_data_df = pd.DataFrame([inputData.dict()])
+
+    result = catboost_predict(input_data_df)
+    return jsonify({'result': result[0]})
 
 
 if __name__ == '__main__':

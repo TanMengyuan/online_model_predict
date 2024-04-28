@@ -5,8 +5,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 
 # 加载数据集
-train_data = pd.read_csv('train12-t5.csv')  # 替换为正确的文件路径
-test_data = pd.read_csv('test12-t5.csv')    # 替换为正确的文件路径
+train_data = pd.read_csv('train15-ts.csv')  # 替换为正确的文件路径
+test_data = pd.read_csv('train15-ts.csv')    # 替换为正确的文件路径
 
 # 选定的特征
 selected_features = ['copolymer', 'A3431531268', 'A864662311', 'A3975295864', 'A4216335232',
@@ -63,6 +63,12 @@ catboost.fit(X_train, y_train)
 # 对训练集和测试集进行预测
 y_pred_train = catboost.predict(X_train)
 y_pred_test = catboost.predict(X_test)
+
+# 模型保存路径
+model_save_path = '../predict_model/catboost_model-2.cbm'
+# 保存模型
+catboost.save_model(model_save_path, format='cbm')
+print(f"Model has been saved to {model_save_path}")
 
 # # 保存预测结果
 # train_predictions = pd.DataFrame({'Actual': y_train, 'Predicted': y_pred_train})

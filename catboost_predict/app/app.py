@@ -6,7 +6,7 @@
 """
 
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from catboost import CatBoostRegressor
 from pydantic import BaseModel, ValidationError
 from typing import Optional
@@ -33,9 +33,9 @@ def catboost_predict(input_data):
     return catboost.predict(input_data)
 
 
-def process_data(data):
-    # 这里可以放置具体的处理逻辑
-    return data[::-1]  # 假设我们只是简单地反转字符串
+@app.route('/')
+def index():
+    return render_template('index.html', message="Hello, World!")
 
 
 @app.route('/process', methods=['POST'])
@@ -51,7 +51,7 @@ def process():
         return jsonify({'error': 'No data provided'}), 400
 
     # 调用Python方法
-    result = process_data(data)
+    result = data[::-1]
 
     # 返回处理结果
     return jsonify({'result': result})

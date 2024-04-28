@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predictive Model Interface</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Welcome to the Prediction Service</h1>
+<form id="dataForm">
+    <label for="copolymer">Copolymer:</label>
+    <input type="text" id="copolymer" name="copolymer"><br><br>
+
+    <label for="A3431531268">A3431531268:</label>
+    <input type="text" id="A3431531268" name="A3431531268"><br><br>
+
+    <label for="A864662311">A864662311:</label>
+    <input type="text" id="A864662311" name="A864662311"><br><br>
+
+    <!-- Add other fields similarly -->
+
+    <button type="button" onclick="submitData()">Submit</button>
+</form>
+
+<script>
+    function submitData() {
+        var formData = {
+            "copolymer": $("#copolymer").val(),
+            "A3431531268": $("#A3431531268").val(),
+            "A864662311": $("#A864662311").val(),
+            // Continue for other fields
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/predict",
+            contentType: "application/json",
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert("Prediction Result: " + response.result);
+            },
+            error: function(xhr, status, error) {
+                alert("An error occurred: " + xhr.responseText);
+            }
+        });
+    }
+</script>
+</body>
+</html>

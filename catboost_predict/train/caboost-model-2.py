@@ -65,7 +65,7 @@ y_pred_train = catboost.predict(X_train)
 y_pred_test = catboost.predict(X_test)
 
 # 模型保存路径
-model_save_path = '../predict_model/catboost_model-2.cbm'
+model_save_path = '../predict_model/catboost_model.cbm'
 # 保存模型
 catboost.save_model(model_save_path, format='cbm')
 print(f"Model has been saved to {model_save_path}")

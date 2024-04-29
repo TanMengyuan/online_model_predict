@@ -12,12 +12,17 @@ from pydantic import BaseModel, ValidationError, Field
 from typing import Optional
 
 app = Flask(__name__)
-catboost = CatBoostRegressor()
-model_save_path = '../predict_model/catboost_model.cbm'
-catboost.load_model(model_save_path)
+
+film_model_catboost = CatBoostRegressor()
+film_model_save_path = '../predict_model/film/catboost_model.cbm'
+film_model_catboost.load_model(film_model_save_path)
+
+powder_model_catboost = CatBoostRegressor()
+powder_model_save_path = '../predict_model/powder/catboost_model.cbm'
+powder_model_catboost.load_model(powder_model_save_path)
 
 
-class InputData(BaseModel):
+class FilmInputData(BaseModel):
     copolymer: Optional[float] = Field(default=0.0, alias="copolymer")
     A3431531268: Optional[float] = Field(default=0.0, alias="A3431531268")
     A864662311: Optional[float] = Field(default=0.0, alias="A864662311")
@@ -29,8 +34,13 @@ class InputData(BaseModel):
     G2976033787: Optional[float] = Field(default=0.0, alias="G2976033787")
 
 
-def catboost_predict(input_data):
-    return catboost.predict(input_data)
+class PowderInputData(BaseModel):
+    A2720313463: Optional[float] = Field(default=0.0, alias="A2720313463")
+    A2041434490: Optional[float] = Field(default=0.0, alias="A2041434490")
+    A2084364935: Optional[float] = Field(default=0.0, alias="A2084364935")
+    A951226070: Optional[float] = Field(default=0.0, alias="A951226070")
+    G3692055567: Optional[float] = Field(default=0.0, alias="G3692055567")
+    G3276511768: Optional[float] = Field(default=0.0, alias="G3276511768")
 
 
 @app.route('/')
@@ -38,36 +48,31 @@ def index():
     return render_template('index.html', message="Hello, World!")
 
 
-@app.route('/test', methods=['POST'])
-def process():
+@app.route('/predict/film', methods=['POST'])
+def predict_film():
     try:
-        inputData = InputData.parse_raw(request.data)
-    except ValidationError as e:
-        return jsonify({'error': str(e)}), 400
-
-    # 获取请求体中的数据
-    data = str(inputData.A2245273601)
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
-
-    # 调用Python方法
-    result = data[::-1]
-
-    # 返回处理结果
-    return jsonify({'result': result})
-
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        inputData = InputData.parse_raw(request.data)
+        inputData = FilmInputData.parse_raw(request.data)
     except ValidationError as e:
         print(e)
         return jsonify({'error': "invalid arguments."}), 400
 
     input_data_df = pd.DataFrame([inputData.dict()])
 
-    result = catboost_predict(input_data_df)
+    result = film_model_catboost.predict(input_data_df)
+    return jsonify({'result': result[0]})
+
+
+@app.route('/predict/powder', methods=['POST'])
+def predict_powder():
+    try:
+        inputData = PowderInputData.parse_raw(request.data)
+    except ValidationError as e:
+        print(e)
+        return jsonify({'error': "invalid arguments."}), 400
+
+    input_data_df = pd.DataFrame([inputData.dict()])
+
+    result = powder_model_catboost.predict(input_data_df)
     return jsonify({'result': result[0]})
 
 

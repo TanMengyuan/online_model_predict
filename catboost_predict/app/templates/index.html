@@ -3,38 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <title>Predictive Model Interface</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        .table-editable {
+            border-collapse: collapse;
+        }
+        .table-editable td, .table-editable th {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+        .table-editable th {
+            background-color: #f8f9fa;
+        }
+        .table-editable td {
+            background-color: #fff;
+        }
+        .form-control {
+            border: none;
+            margin: 0;
+            padding: 0;
+            background: none;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome to the Prediction Service</h1>
-<form id="dataForm">
-    <label for="copolymer">Copolymer:</label>
-    <input type="text" id="copolymer" name="copolymer"><br><br>
+<div class="container mt-4">
+    <h1>Welcome to the Prediction Service</h1>
+    <p>Online network prediction server of thermal stability (Temperature at 5% weight loss) for polyimide films and powders.</p>
+    <img src="{{ url_for('static', filename='images/desc.png') }}" alt="Feature Description" class="img-fluid mb-3">
 
-    <label for="A3431531268">A3431531268:</label>
-    <input type="text" id="A3431531268" name="A3431531268"><br><br>
+    <form id="dataForm" class="mb-3">
+        <table class="table table-editable">
+            <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Copolymer</td>
+                <td><input type="text" id="copolymer" name="copolymer" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>A3431531268</td>
+                <td><input type="text" id="A3431531268" name="A3431531268" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>A864662311</td>
+                <td><input type="text" id="A864662311" name="A864662311" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>A3975295864</td>
+                <td><input type="text" id="A3975295864" name="A3975295864" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>A4216335232</td>
+                <td><input type="text" id="A4216335232" name="A4216335232" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>A3217380708</td>
+                <td><input type="text" id="A3217380708" name="A3217380708" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>A951226070</td>
+                <td><input type="text" id="A951226070" name="A951226070" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>G994485099</td>
+                <td><input type="text" id="G994485099" name="G994485099" class="form-control"></td>
+            </tr>
+            <tr>
+                <td>G2976033787</td>
+                <td><input type="text" id="G2976033787" name="G2976033787" class="form-control"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" onclick="submitData()" class="submit-button">Submit Data</button>
+    </form>
+</div>
 
-    <label for="A864662311">A864662311:</label>
-    <input type="text" id="A864662311" name="A864662311"><br><br>
-
-    <!-- Add other fields similarly -->
-
-    <button type="button" onclick="submitData()">Submit</button>
-</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     function submitData() {
         var formData = {
-            "copolymer": $("#copolymer").val(),
-            "A3431531268": $("#A3431531268").val(),
-            "A864662311": $("#A864662311").val(),
-            "A3975295864": $("#A3975295864").val(),
-            "A4216335232": $("#A4216335232").val(),
-            "A3217380708": $("#A3217380708").val(),
-            "A951226070": $("#A951226070").val(),
-            "G994485099": $("#G994485099").val(),
-            "G2976033787": $("#G2976033787").val(),
-            // Continue for other fields
+            "copolymer": $("#copolymer").val() || null,
+            "A3431531268": $("#A3431531268").val() || null,
+            "A864662311": $("#A864662311").val() || null,
+            "A3975295864": $("#A3975295864").val() || null,
+            "A4216335232": $("#A4216335232").val() || null,
+            "A3217380708": $("#A3217380708").val() || null,
+            "A951226070": $("#A951226070").val() || null,
+            "G994485099": $("#G994485099").val() || null,
+            "G2976033787": $("#G2976033787").val() || null,
         };
 
         $.ajax({

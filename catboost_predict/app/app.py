@@ -8,7 +8,7 @@
 import pandas as pd
 from flask import Flask, request, jsonify, render_template
 from catboost import CatBoostRegressor
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, Field
 from typing import Optional
 
 app = Flask(__name__)
@@ -18,15 +18,15 @@ catboost.load_model(model_save_path)
 
 
 class InputData(BaseModel):
-    copolymer: Optional[float] = None
-    A3431531268: Optional[float] = None
-    A864662311: Optional[float] = None
-    A3975295864: Optional[float] = None
-    A4216335232: Optional[float] = None
-    A3217380708: Optional[float] = None
-    A951226070: Optional[float] = None
-    G994485099: Optional[float] = None
-    G2976033787: Optional[float] = None
+    copolymer: Optional[float] = Field(default=0.0, alias="copolymer")
+    A3431531268: Optional[float] = Field(default=0.0, alias="A3431531268")
+    A864662311: Optional[float] = Field(default=0.0, alias="A864662311")
+    A3975295864: Optional[float] = Field(default=0.0, alias="A3975295864")
+    A4216335232: Optional[float] = Field(default=0.0, alias="A4216335232")
+    A3217380708: Optional[float] = Field(default=0.0, alias="A3217380708")
+    A951226070: Optional[float] = Field(default=0.0, alias="A951226070")
+    G994485099: Optional[float] = Field(default=0.0, alias="G994485099")
+    G2976033787: Optional[float] = Field(default=0.0, alias="G2976033787")
 
 
 def catboost_predict(input_data):
@@ -38,7 +38,7 @@ def index():
     return render_template('index.html', message="Hello, World!")
 
 
-@app.route('/process', methods=['POST'])
+@app.route('/test', methods=['POST'])
 def process():
     try:
         inputData = InputData.parse_raw(request.data)
@@ -62,7 +62,8 @@ def predict():
     try:
         inputData = InputData.parse_raw(request.data)
     except ValidationError as e:
-        return jsonify({'error': str(e)}), 400
+        print(e)
+        return jsonify({'error': "invalid arguments."}), 400
 
     input_data_df = pd.DataFrame([inputData.dict()])
 

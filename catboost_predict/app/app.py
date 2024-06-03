@@ -41,11 +41,22 @@ class PowderInputData(BaseModel):
     A951226070: Optional[float] = Field(default=0.0, alias="A951226070")
     G3692055567: Optional[float] = Field(default=0.0, alias="G3692055567")
     G3276511768: Optional[float] = Field(default=0.0, alias="G3276511768")
+    A4216335232: Optional[float] = Field(default=0.0, alias="A4216335232")
+
+    def transform_fields(self):
+        data = self.dict()
+        transformed_data = {}
+        for key, value in data.items():
+            if key == "A4216335232":
+                transformed_data["A4216335232-1"] = value
+            else:
+                transformed_data[key + "-2"] = value
+        return transformed_data
 
 
 @app.route('/')
 def index():
-    return render_template('index.html', message="Hello, World!")
+    return render_template('index.html', message="Welcome to the Prediction Service")
 
 
 @app.route('/predict/film', methods=['POST'])
@@ -70,7 +81,7 @@ def predict_powder():
         print(e)
         return jsonify({'error': "invalid arguments."}), 400
 
-    input_data_df = pd.DataFrame([inputData.dict()])
+    input_data_df = pd.DataFrame([inputData.transform_fields()])
 
     result = powder_model_catboost.predict(input_data_df)
     return jsonify({'result': result[0]})
